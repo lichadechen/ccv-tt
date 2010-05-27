@@ -15,5 +15,4 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 {
 	printf("Project Created");
-	cvWaitKey(0);
 }
