@@ -52,13 +52,14 @@ temp_tmp=cvCloneImage(temp);
 cvThreshold(img,img,120,255,CV_THRESH_BINARY);
 cvSmooth(img,img,CV_MEDIAN);
 
-cvThreshold(temp_tmp,temp_tmp,120,255,CV_THRESH_BINARY);
+cvThreshold(temp_tmp,temp_tmp,80,255,CV_THRESH_BINARY);
 cvSmooth(temp_tmp,temp_tmp,CV_MEDIAN);
 
 /******Remove This *******/
 IplImage *local=cvCloneImage(temp_tmp);
 
 CvSeq* contours;
+CvSeq* tempContours=0;
 CvMemStorage *storage = cvCreateMemStorage(0);
 
 int number=cvFindContours(temp_tmp, storage, &contours, sizeof(CvContour),
@@ -68,19 +69,20 @@ printf("%d",number);
 
 int n2=0;
 
-for( ; contours != 0; contours = contours->h_next )
+for( ; contours != 0 || tempContours==0 ; contours = contours->h_next )
 {
 	CvBox2D box=cvMinAreaRect2(contours);
-	double minArea=temp_tmp->width*temp_tmp->height/3;
+	double minArea=2*temp_tmp->width*temp_tmp->height/3;
 
 	if(box.size.width*box.size.height > minArea)
 	{
 		n2++;
 		CvScalar color = CV_RGB( rand()&255, rand()&255, rand()&0 );
-		cvDrawContours( temp, contours, color, color, -1, 1, 8 );
-		//draw_box(temp,box,color);
+		tempContours=contours;
 	}
 }
+
+
 
 printf("\n%d",n2);
 
@@ -101,5 +103,8 @@ cvReleaseImage(&main);
 cvReleaseImage(&temp);
 cvReleaseImage(&img);
 cvReleaseImage(&temp_tmp);
+
+cvDestroyWindow("Main Image");
+cvDestroyWindow("Template Image");
 return 0;
 }
