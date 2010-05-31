@@ -174,11 +174,11 @@ return 0;
 
 int check()
 {
-	IplImage main,temp;
+	IplImage *main,*temp;
 	main = cvLoadImage("Images/main.jpg",0);
 	temp = cvLoadImage("Images/template.jpg",0);
 	
-	
+
 
 	cvThreshold(main,main,120,255,CV_THRESH_BINARY);
 	cvSmooth(main,main,CV_MEDIAN);
