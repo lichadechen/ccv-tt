@@ -73,7 +73,7 @@ CvSeq* getContours(IplImage* img)
 	return contours;
 }
 
-//Gets template contours, has to be improved based on the requirement, say
+//Gets template contours, has to be improved based on the requirement
 
 CvSeq* getTemplateContours(IplImage *img,double minArea,bool retutnAll=false)
 {
@@ -106,9 +106,13 @@ CvSeq* getTemplateContours(IplImage *img,double minArea,bool retutnAll=false)
 }
 
 //********************************************************//
+//********************************************************//
+
 //PROCEDURE=1
 //This function is the main function which does contour-bounded rectangle matching
 //You have to set the PROCEDURE=1 for this to execute
+
+//********************************************************//
 //********************************************************//
 
 int match()
@@ -148,14 +152,7 @@ int match()
 		printf("Bad Template Contour");
 	}
 
-	CvSeq* contours;
-	CvMemStorage *storage = cvCreateMemStorage(0);
-
-	int number=cvFindContours(img, storage, &contours, sizeof(CvContour),
-						  CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
-
-	printf("Number of main Contours in the main image = %d\n",number);
-
+	CvSeq* contours=getContours(img);
 	int n=0;
 	for( ; contours != 0; contours = contours->h_next )
 	{
@@ -192,16 +189,25 @@ int match()
 }
 
 //********************************************************//
+//********************************************************//
+
 //PROCEDURE=2
 //This function is the check function which is used to see the contours,
 //You have to set the PROCEDURE=2 for this to execute
+
+//********************************************************//
 //********************************************************//
 
 int check()
 {
-	IplImage *main,*temp; //For Showing
-	main = cvLoadImage("Images/main.jpg",0);
-	temp = cvLoadImage("Images/template.jpg",0);
+	IplImage *main_img,*temp_img; //For Showing
+	main_img = cvLoadImage("Images/main.jpg",0);
+	temp_img = cvLoadImage("Images/template.jpg",0);
+	
+	IplImage *main,*temp; //For Processing
+	main=cvCloneImage(main_img);
+	temp=cvCloneImage(temp_img);
+
 
 //*************************************************************//
 //All the operations go here
@@ -214,26 +220,35 @@ int check()
 	cvSmooth(temp,temp,CV_MEDIAN);
 
 	CvSeq* contours=getContours(cvCloneImage(main));
-	CvSeq* tempContours=getTemplateContours(cvCloneImage(temp),1);
+	CvSeq* tempContours=getTemplateContours(cvCloneImage(temp),1,true);
 
-	cvDrawContours( main,contours, getRandomColor(),getRandomColor(), -1, 1, 8 );
-	cvDrawContours(temp, tempContours, getRandomColor(),getRandomColor(), -1,1, 8 );
+	for( ; contours != 0; contours = contours->h_next )
+	{
+		cvDrawContours( main_img,contours, getRandomColor(),getRandomColor(), -1, 1, 8 );
+	}
+
+	for( ; tempContours != 0; tempContours = tempContours->h_next )
+	{
+		cvDrawContours(temp_img, tempContours, getRandomColor(),getRandomColor(), -1,1, 8 );
+	}
 
 //*************************************************************//
 //Operations End
 //*************************************************************//
 
 	cvNamedWindow("Main Image");
-	cvShowImage("Main Image",main);
+	cvShowImage("Main Image",main_img);
 
 	cvNamedWindow("Template Image");
-	cvShowImage("Template Image",temp);
+	cvShowImage("Template Image",temp_img);
 
 	cvWaitKey(0);
 
 	cvReleaseImage(&main);
 	cvReleaseImage(&temp);
-	
+	cvReleaseImage(&main_img);
+	cvReleaseImage(&temp_img);
+
 	cvDestroyWindow("Main Image");
 	cvDestroyWindow("Template Image");
 
