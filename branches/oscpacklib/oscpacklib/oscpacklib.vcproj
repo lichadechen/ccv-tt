@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Users\AMIT\Documents\Visual Studio 2008\Projects\oscpacklib\oscpacklib\ip&quot;;&quot;C:\Users\AMIT\Documents\Visual Studio 2008\Projects\oscpacklib\oscpacklib\osc&quot;"
+				AdditionalIncludeDirectories=".\ip;.\osc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
